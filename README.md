@@ -1,6 +1,6 @@
 # AWS IP Prefixes Search Page
 
-This repository hosts a simple, user-friendly search interface for Amazon Web Services (AWS) IP prefixes. You can access the live site [here][(https://ebrahimahmadi.github.io/aws-ip-ranges-html-search/)].
+This repository hosts a simple, user-friendly search interface for Amazon Web Services (AWS) IP prefixes. You can access the live site [here](https://ebrahimahmadi.github.io/aws-ip-ranges-html-search/).
 
 ## Use Cases
 
