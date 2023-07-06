@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- CSS only Bootstrap 5.0 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    .table-row:hover {
+      background-color: #f2f2f2;
+      cursor: pointer;
+    }
+
+    .table th {
+      position: sticky;
+      top: 0;
+      background: #6c757d;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>IP Prefixes and Services Search</h2>
+  <div id="searchInputs" class="mb-3">
+    <!-- Input fields will be inserted here -->
+  </div>
+
+  <table class="table table-bordered" id="ipTable">
+    <thead>
+      <tr>
+        <th>IP Prefix</th>
+        <th>Region</th>
+        <th>Service</th>
+        <th>Network Border Group</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table data will be inserted here -->
+    </tbody>
+  </table>
+
+  <script>
+    const url = 'https://ip-ranges.amazonaws.com/ip-ranges.json';
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const fields = ['ip_prefix', 'region', 'service', 'network_border_group'];
+        const table = document.getElementById('ipTable');
+        const inputsContainer = document.getElementById('searchInputs');
+        const searchFilters = {};
+
+        fields.forEach(field => {
+          const input = document.createElement('input');
+          input.classList.add('form-control', 'mb-2');
+          input.placeholder = `Search for ${field.replace('_', ' ')}..`;
+          input.addEventListener('keyup', function() {
+            searchFilters[field] = this.value.toUpperCase();
+            searchTable();
+          });
+          inputsContainer.appendChild(input);
+        });
+
+        data.prefixes.forEach(prefix => {
+          const row = table.insertRow();
+          row.classList.add('table-row');
+          row.insertCell().textContent = prefix.ip_prefix;
+          row.insertCell().textContent = prefix.region;
+          row.insertCell().textContent = prefix.service;
+          row.insertCell().textContent = prefix.network_border_group;
+        });
+
+        function searchTable() {
+          const tr = table.getElementsByTagName('tr');
+
+          for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName('td');
+            let shouldDisplay = true;
+
+            fields.forEach((field, fieldIndex) => {
+              if (td.length > 0 && td[fieldIndex] && searchFilters[field]) {
+                let txtValue = td[fieldIndex].textContent || td[fieldIndex].innerText;
+                if (txtValue.toUpperCase().indexOf(searchFilters[field]) === -1) {
+                  shouldDisplay = false;
+                }
+              }
+            });
+
+            tr[i].style.display = shouldDisplay ? "" : "none";
+          }
+        }
+      });
+  </script>
+</body>
+</html>
